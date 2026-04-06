@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Outfit:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --indigo: #2e3192;
+        --sky: #3fa9f5;
+        --bg: #f6f8fb;
+        --text: #121826;
+        --muted: #4b5563;
+        --border: rgba(17, 24, 39, 0.12);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "DM Sans", system-ui, sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, var(--bg), #eef3f9 60%, var(--bg));
+      }
+      header {
+        background: rgba(255,255,255,0.9);
+        border-bottom: 1px solid rgba(17,24,39,0.08);
+        position: sticky; top: 0;
+        backdrop-filter: blur(12px);
+      }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 1.25rem; }
+      .brand {
+        display: flex; align-items: center; gap: 0.75rem; text-decoration: none;
+        color: var(--indigo);
+      }
+      .brand img { width: 34px; height: 34px; object-fit: contain; }
+      h1, h2 { font-family: Outfit, system-ui, sans-serif; margin: 0; }
+      main { padding: 2rem 0 3rem; }
+      .card {
+        background: #fff; border: 1px solid rgba(46,49,146,0.12);
+        border-radius: 18px; padding: 1.25rem;
+        box-shadow: 0 12px 32px rgba(17,24,39,0.08);
+      }
+      .grid { display: grid; gap: 1rem; }
+      .muted { color: rgba(18,24,38,0.72); line-height: 1.6; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 0.75rem 1rem; border-radius: 999px;
+        border: 1px solid transparent; font-weight: 700;
+        cursor: pointer; text-decoration: none;
+      }
+      .btn-primary { background: var(--indigo); color: #fff; }
+      .btn-secondary { background: rgba(63,169,245,0.14); border-color: rgba(63,169,245,0.35); color: var(--indigo); }
+      .row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+      .lessons { list-style: none; padding: 0; margin: 0.5rem 0 0; display: grid; gap: 0.5rem; }
+      .lesson {
+        padding: 0.75rem 0.85rem; border-radius: 14px;
+        border: 1px solid rgba(17,24,39,0.12); background: rgba(46,49,146,0.03);
+      }
+      .lesson small { color: rgba(18,24,38,0.62); display: block; margin-top: 0.25rem; }
+      .form {
+        display: grid; gap: 0.75rem; margin-top: 0.75rem;
+      }
+      label { font-weight: 700; color: rgba(18,24,38,0.86); }
+      input {
+        width: 100%; padding: 0.85rem 0.95rem;
+        border-radius: 14px; border: 1px solid rgba(17,24,39,0.14);
+        font: inherit;
+      }
+      input:focus { outline: none; border-color: rgba(63,169,245,0.65); box-shadow: 0 0 0 3px rgba(63,169,245,0.25); }
+      .error { color: #a80f15; font-weight: 700; }
+      .ok { color: #0f7a5b; font-weight: 700; }
+      iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 14px; background: #111827; }
+      .video-hint { font-size: 0.92rem; color: rgba(18,24,38,0.62); }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <a class="brand" href="/" aria-label="Back to app home">
+          <img src="jenrada_icon_color.png" alt="" />
+          <strong>Jenrada Courses</strong>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap grid">
+        <div class="card">
+          <h1 id="course-title">Loading…</h1>
+          <p class="muted" id="course-desc"></p>
+
+          <div id="public-actions" class="row" hidden>
+            <a class="btn btn-primary" href="/sandbox" id="sandbox-link">Create account / Sandbox</a>
+            <button class="btn btn-secondary" id="login-jump" type="button">Log in</button>
+          </div>
+
+          <div id="member-area" hidden>
+            <div class="row" style="justify-content: space-between; margin-top: 1rem">
+              <h2>Lessons</h2>
+              <button class="btn btn-secondary" type="button" id="logout-btn">Log out</button>
+            </div>
+            <ul class="lessons" id="lessons"></ul>
+            <div id="video" style="margin-top: 1rem" hidden>
+              <h2 id="video-title" style="margin-bottom: 0.75rem"></h2>
+              <iframe id="video-frame" title="Lesson video" allow="autoplay; fullscreen; picture-in-picture"></iframe>
+              <p class="video-hint">This is an unlisted video URL. Keep it private.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="auth-card" hidden>
+          <h2>Create account</h2>
+          <form class="form" id="signup-form">
+            <div>
+              <label for="signup-email">Email</label>
+              <input id="signup-email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div>
+              <label for="signup-password">Password</label>
+              <input
+                id="signup-password"
+                name="password"
+                type="password"
+                minlength="8"
+                autocomplete="new-password"
+                required
+              />
+            </div>
+            <button class="btn btn-primary" type="submit">Sign up</button>
+            <p class="error" id="signup-error" hidden></p>
+            <p class="ok" id="signup-ok" hidden></p>
+          </form>
+
+          <hr style="border: none; border-top: 1px solid rgba(17,24,39,0.08); margin: 1rem 0" />
+
+          <h2>Log in</h2>
+          <form class="form" id="login-form">
+            <div>
+              <label for="login-email">Email</label>
+              <input id="login-email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div>
+              <label for="login-password">Password</label>
+              <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+            </div>
+            <button class="btn btn-primary" type="submit">Log in</button>
+            <p class="error" id="login-error" hidden></p>
+            <p class="muted" style="margin: 0.25rem 0 0">Need a test course? Use the <a href="/sandbox">sandbox</a>.</p>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const slug = location.pathname.split("/").filter(Boolean).pop();
+
+      const els = {
+        title: document.getElementById("course-title"),
+        desc: document.getElementById("course-desc"),
+        publicActions: document.getElementById("public-actions"),
+        loginJump: document.getElementById("login-jump"),
+        memberArea: document.getElementById("member-area"),
+        lessons: document.getElementById("lessons"),
+        video: document.getElementById("video"),
+        videoTitle: document.getElementById("video-title"),
+        videoFrame: document.getElementById("video-frame"),
+        logoutBtn: document.getElementById("logout-btn"),
+        authCard: document.getElementById("auth-card"),
+        signupForm: document.getElementById("signup-form"),
+        signupError: document.getElementById("signup-error"),
+        signupOk: document.getElementById("signup-ok"),
+        loginForm: document.getElementById("login-form"),
+        loginError: document.getElementById("login-error"),
+      };
+
+      async function api(path, opts = {}) {
+        const res = await fetch(path, { credentials: "same-origin", ...opts });
+        const data = await res.json().catch(() => ({}));
+        return { res, data };
+      }
+
+      function show(el, yes) {
+        if (!el) return;
+        el.hidden = !yes;
+      }
+
+      function renderLessons(items) {
+        els.lessons.innerHTML = "";
+        items.forEach((l) => {
+          const li = document.createElement("li");
+          li.className = "lesson";
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "btn btn-secondary";
+          b.style.width = "100%";
+          b.style.justifyContent = "space-between";
+          b.textContent = `Lesson ${l.position}: ${l.title}`;
+          b.addEventListener("click", () => {
+            els.videoTitle.textContent = l.title;
+            els.videoFrame.src = l.videoUrl;
+            show(els.video, true);
+          });
+          li.appendChild(b);
+          const meta = document.createElement("small");
+          meta.textContent = l.videoUrl ? "Video available" : "No video URL set yet (admin will add)";
+          li.appendChild(meta);
+          els.lessons.appendChild(li);
+        });
+      }
+
+      async function load() {
+        const { data: course } = await api(`/api/courses/${encodeURIComponent(slug)}`);
+        if (course && course.title) {
+          document.title = `${course.title} — Jenrada`;
+          els.title.textContent = course.title;
+          els.desc.textContent = course.description || "";
+        }
+
+        const { res: meRes } = await api("/api/me");
+        const isAuthed = meRes.ok;
+        if (!isAuthed) {
+          show(els.publicActions, true);
+          show(els.memberArea, false);
+          show(els.authCard, true);
+          return;
+        }
+
+        const { res: lessonsRes, data: lessons } = await api(`/api/courses/${encodeURIComponent(slug)}/lessons`);
+        if (!lessonsRes.ok) {
+          show(els.publicActions, true);
+          show(els.memberArea, false);
+          return;
+        }
+        show(els.publicActions, false);
+        show(els.authCard, false);
+        show(els.memberArea, true);
+        renderLessons(lessons.lessons || []);
+      }
+
+      els.loginJump?.addEventListener("click", () => {
+        show(els.authCard, true);
+        els.authCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("login-email")?.focus();
+      });
+
+      els.signupForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        els.signupError.hidden = true;
+        els.signupOk.hidden = true;
+        const fd = new FormData(els.signupForm);
+        const email = fd.get("email");
+        const password = fd.get("password");
+        const { res, data } = await api("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        if (!res.ok) {
+          els.signupError.textContent = data.error || "Signup failed.";
+          els.signupError.hidden = false;
+          return;
+        }
+        els.signupOk.textContent = "Account created. Loading lessons…";
+        els.signupOk.hidden = false;
+        await load();
+      });
+
+      els.loginForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        els.loginError.hidden = true;
+        const fd = new FormData(els.loginForm);
+        const email = fd.get("email");
+        const password = fd.get("password");
+        const { res, data } = await api("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        if (!res.ok) {
+          els.loginError.textContent = data.error || "Login failed.";
+          els.loginError.hidden = false;
+          return;
+        }
+        await load();
+      });
+
+      els.logoutBtn?.addEventListener("click", async () => {
+        await api("/api/auth/logout", { method: "POST" });
+        location.reload();
+      });
+
+      load();
+    </script>
+  </body>
+</html>
+

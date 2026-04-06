@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jenrada Sandbox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Outfit:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --indigo: #2e3192;
+        --sky: #3fa9f5;
+        --bg: #f6f8fb;
+        --text: #121826;
+        --muted: #4b5563;
+        --border: rgba(17, 24, 39, 0.12);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "DM Sans", system-ui, sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, var(--bg), #eef3f9 60%, var(--bg));
+      }
+      header {
+        background: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+        position: sticky;
+        top: 0;
+        backdrop-filter: blur(12px);
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 1.25rem;
+      }
+      h1,
+      h2 {
+        font-family: Outfit, system-ui, sans-serif;
+        margin: 0;
+      }
+      main {
+        padding: 2rem 0 3rem;
+      }
+      .grid {
+        display: grid;
+        gap: 1rem;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid rgba(46, 49, 146, 0.12);
+        border-radius: 18px;
+        padding: 1.25rem;
+        box-shadow: 0 12px 32px rgba(17, 24, 39, 0.08);
+      }
+      .muted {
+        color: rgba(18, 24, 38, 0.72);
+        line-height: 1.6;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      label {
+        font-weight: 700;
+        color: rgba(18, 24, 38, 0.86);
+      }
+      input {
+        width: 100%;
+        padding: 0.85rem 0.95rem;
+        border-radius: 14px;
+        border: 1px solid rgba(17, 24, 39, 0.14);
+        font: inherit;
+      }
+      input:focus {
+        outline: none;
+        border-color: rgba(63, 169, 245, 0.65);
+        box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.25);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .btn-primary {
+        background: var(--indigo);
+        color: #fff;
+      }
+      .btn-secondary {
+        background: rgba(63, 169, 245, 0.14);
+        border-color: rgba(63, 169, 245, 0.35);
+        color: var(--indigo);
+      }
+      .err {
+        color: #a80f15;
+        font-weight: 800;
+      }
+      .ok {
+        color: #0f7a5b;
+        font-weight: 800;
+      }
+      code {
+        background: rgba(46, 49, 146, 0.06);
+        padding: 0.1rem 0.35rem;
+        border-radius: 8px;
+      }
+      .courses {
+        list-style: none;
+        padding: 0;
+        margin: 0.75rem 0 0;
+        display: grid;
+        gap: 0.5rem;
+      }
+      .courses a {
+        display: block;
+        border: 1px solid rgba(17, 24, 39, 0.12);
+        background: rgba(46, 49, 146, 0.03);
+        border-radius: 14px;
+        padding: 0.85rem;
+        text-decoration: none;
+      }
+      .courses a:hover {
+        border-color: rgba(46, 49, 146, 0.22);
+      }
+      .courses small {
+        display: block;
+        color: rgba(18, 24, 38, 0.62);
+        margin-top: 0.15rem;
+      }
+      form.grid {
+        gap: 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap row" style="justify-content: space-between">
+        <strong>Jenrada Sandbox</strong>
+        <a class="btn btn-secondary" href="/">Back to site</a>
+      </div>
+    </header>
+
+    <main>
+      <div class="wrap grid">
+        <div class="card">
+          <h1>Account + Sandbox Course</h1>
+          <p class="muted">
+            Use this page to create an account, log in, then generate a made-up course you can access.
+          </p>
+          <p class="muted" id="health"></p>
+        </div>
+
+        <div class="card" id="meCard" hidden>
+          <div class="row" style="justify-content: space-between">
+            <div>
+              <h2>You’re logged in</h2>
+              <p class="muted" id="meLine" style="margin: 0.25rem 0 0"></p>
+            </div>
+            <button class="btn btn-secondary" id="logoutBtn" type="button">Log out</button>
+          </div>
+
+          <div class="row" style="margin-top: 1rem">
+            <button class="btn btn-primary" id="createCourseBtn" type="button">Create sandbox course</button>
+            <span class="muted" id="createStatus"></span>
+          </div>
+
+          <h2 style="margin-top: 1.25rem">My courses</h2>
+          <ul class="courses" id="myCourses"></ul>
+        </div>
+
+        <div class="card" id="authCard">
+          <h2>Sign up</h2>
+          <form class="grid" id="signupForm">
+            <div>
+              <label for="suEmail">Email</label>
+              <input id="suEmail" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div>
+              <label for="suPassword">Password</label>
+              <input id="suPassword" name="password" type="password" minlength="8" autocomplete="new-password" required />
+            </div>
+            <button class="btn btn-primary" type="submit">Create account</button>
+            <p class="err" id="signupErr" hidden></p>
+            <p class="ok" id="signupOk" hidden></p>
+          </form>
+
+          <hr style="border: none; border-top: 1px solid rgba(17, 24, 39, 0.08); margin: 1rem 0" />
+
+          <h2>Log in</h2>
+          <form class="grid" id="loginForm">
+            <div>
+              <label for="liEmail">Email</label>
+              <input id="liEmail" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div>
+              <label for="liPassword">Password</label>
+              <input id="liPassword" name="password" type="password" autocomplete="current-password" required />
+            </div>
+            <button class="btn btn-secondary" type="submit">Log in</button>
+            <p class="err" id="loginErr" hidden></p>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const el = (id) => document.getElementById(id);
+      const els = {
+        health: el("health"),
+        meCard: el("meCard"),
+        meLine: el("meLine"),
+        authCard: el("authCard"),
+        signupForm: el("signupForm"),
+        signupErr: el("signupErr"),
+        signupOk: el("signupOk"),
+        loginForm: el("loginForm"),
+        loginErr: el("loginErr"),
+        logoutBtn: el("logoutBtn"),
+        createCourseBtn: el("createCourseBtn"),
+        createStatus: el("createStatus"),
+        myCourses: el("myCourses"),
+      };
+
+      async function api(path, opts = {}) {
+        const res = await fetch(path, { credentials: "same-origin", ...opts });
+        const data = await res.json().catch(() => ({}));
+        return { res, data };
+      }
+
+      function show(node, yes) {
+        if (!node) return;
+        node.hidden = !yes;
+      }
+
+      function renderCourses(courses) {
+        els.myCourses.innerHTML = "";
+        (courses || []).forEach((c) => {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = `/courses/${encodeURIComponent(c.slug)}`;
+          a.innerHTML = `<strong>${c.title}</strong><small>${c.slug}</small>`;
+          li.appendChild(a);
+          els.myCourses.appendChild(li);
+        });
+        if (!courses || !courses.length) {
+          const li = document.createElement("li");
+          li.className = "muted";
+          li.textContent = "No courses yet. Create a sandbox course above.";
+          els.myCourses.appendChild(li);
+        }
+      }
+
+      async function refresh() {
+        const { res: healthRes, data: health } = await api("/api/health");
+        if (healthRes.ok) {
+          els.health.className = "muted";
+          els.health.textContent = "Server + database look healthy.";
+        } else {
+          els.health.className = "err";
+          els.health.textContent = `Database not ready: ${health.error || "unknown error"}`;
+        }
+
+        const { res, data } = await api("/api/me");
+        if (!res.ok) {
+          show(els.meCard, false);
+          show(els.authCard, true);
+          return;
+        }
+
+        show(els.authCard, false);
+        show(els.meCard, true);
+        els.meLine.textContent = data.user ? data.user.email : "";
+
+        const { data: my } = await api("/api/my/courses");
+        renderCourses(my.courses || []);
+      }
+
+      els.signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        els.signupErr.hidden = true;
+        els.signupOk.hidden = true;
+        const fd = new FormData(els.signupForm);
+        const email = fd.get("email");
+        const password = fd.get("password");
+        const { res, data } = await api("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        if (!res.ok) {
+          els.signupErr.textContent = data.error || "Signup failed.";
+          els.signupErr.hidden = false;
+          return;
+        }
+        els.signupOk.textContent = "Account created. You’re logged in.";
+        els.signupOk.hidden = false;
+        await refresh();
+      });
+
+      els.loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        els.loginErr.hidden = true;
+        const fd = new FormData(els.loginForm);
+        const email = fd.get("email");
+        const password = fd.get("password");
+        const { res, data } = await api("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        if (!res.ok) {
+          els.loginErr.textContent = data.error || "Login failed.";
+          els.loginErr.hidden = false;
+          return;
+        }
+        await refresh();
+      });
+
+      els.logoutBtn.addEventListener("click", async () => {
+        await api("/api/auth/logout", { method: "POST" });
+        location.reload();
+      });
+
+      els.createCourseBtn.addEventListener("click", async () => {
+        els.createStatus.className = "muted";
+        els.createStatus.textContent = "Creating…";
+        const { res, data } = await api("/api/sandbox/create-course", { method: "POST" });
+        if (!res.ok) {
+          els.createStatus.className = "err";
+          els.createStatus.textContent = data.error || "Failed to create course.";
+          return;
+        }
+        els.createStatus.className = "ok";
+        els.createStatus.innerHTML = `Created: <a href="${data.url}"><code>${data.slug}</code></a>`;
+        await refresh();
+      });
+
+      refresh();
+    </script>
+  </body>
+</html>
+
